@@ -1,10 +1,6 @@
 <template>
    <section class="order">
-        <header class="header">
-          <a class="header_title">
-            <span class="header_title_text">订单列表</span>
-          </a>
-        </header>
+        <GshopHeader :title="'订单'"></GshopHeader>
         <section class="order_no_login">
           <img src="../../common/images/order/person.png">
           <h3>登录后查看外卖订单</h3>

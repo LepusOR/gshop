@@ -1,10 +1,6 @@
 <template>
    <section class="profile">
-        <header class="header">
-          <a class="header_title">
-            <span class="header_title_text">我的</span>
-          </a>
-        </header>
+        <GshopHeader :title="'我的'"></GshopHeader>
         <section class="profile-number">
           <a href="javascript:" class="profile-link">
             <div class="profile_image">

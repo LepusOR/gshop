@@ -1,17 +1,14 @@
 <template>
    <section class="msite">
         <!--首页头部-->
-        <header class="msite_header">
-            <span class="header_search">
-              <i class="iconfont icon-sousuo"></i>
-            </span>
-          <span class="header_title">
-              <span class="header_title_text ellipsis">昌平区北七家宏福科技园(337省道北)</span>
-            </span>
-          <span class="header_login">
+        <GshopHeader :title="address.name?address.name:'定位中...'">
+          <span slot="left" class="header_search">
+            <i class="iconfont icon-sousuo"></i>
+          </span>
+          <span slot="right" class="header_login">
               <span class="header_login_text">登录|注册</span>
-            </span>
-        </header>
+          </span>
+        </GshopHeader>
         <!--首页导航-->
         <nav class="msite_nav">
           <div class="swiper-container">
@@ -121,7 +118,7 @@
             <div class="swiper-pagination"></div>
           </div>
         </nav>
-        <!--首页附近商家-->
+        <!-- 首页附近商家 -->
         <div class="msite_shop_list">
           <div class="shop_header">
             <i class="iconfont icon-xuanxiang"></i>
@@ -312,53 +309,42 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+import _ from 'lodash'
+import Swiper from 'swiper'
+import {getAddress} from '../../api'
+import 'swiper/swiper-bundle.min.css'
+
    export default {
-   }
+      async mounted(){
+        /* let result = await getAddress(40.10038,116.36867)
+        console.log(result) */
+        // this.$store.commit('save_address',result.data)
+        this.$store.dispatch('getAddressAction')
+        this.$store.dispatch('getCategoryAction')
+        var mySwiper = new Swiper('.swiper-container', {
+          pagination: {
+            el: '.swiper-pagination', 
+          },
+          loop:true
+	       // autoplay: true,//可选选项，自动滑动
+        })
+      },
+      computed:{
+        // ...mapState(['address'])
+        ...mapState({
+          address:state => state.address,
+          category:state => state.category
+        }),
+        
+      }
+    }
 </script>
 
-<style lang="stylus" rel="stykesheet/stylus">
+<style lang="stylus" rel="stykesheet/stylus" scoped>
    @import "../../common/stylus/mixins.styl"
-         .msite  //首页
+        .msite  //首页
           width 100%
-          .msite_header
-            background-color #02a774
-            position fixed
-            z-index 100
-            left 0
-            top 0
-            width 100%
-            height 45px
-            .header_search
-              position absolute
-              left 15px
-              top 50%
-              transform translateY(-50%)
-              width 10%
-              height 50%
-              .icon-sousuo
-                font-size 25px
-                color #fff
-            .header_title
-              position absolute
-              top 50%
-              left 50%
-              transform translate(-50%, -50%)
-              width 50%
-              color #fff
-              text-align center
-              .header_title_text
-                font-size 20px
-                color #fff
-                display block
-            .header_login
-              font-size 14px
-              color #fff
-              position absolute
-              right 15px
-              top 50%
-              transform translateY(-50%)
-              .header_login_text
-                color #fff
           .msite_nav
             bottom-border-1px(#e4e4e4)
             margin-top 45px
@@ -394,7 +380,8 @@
                       text-align center
                       font-size 13px
                       color #666
-              .swiper-pagination
+              /deep/ 
+              ·.swiper-pagination
                 >span.swiper-pagination-bullet-active
                   background #02a774
           .msite_shop_list
