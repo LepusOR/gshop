@@ -40,6 +40,6 @@ export default [
     },
     {
         path:'/',
-        redirect:'/login'
+        redirect:'/msite'
     }
 ]

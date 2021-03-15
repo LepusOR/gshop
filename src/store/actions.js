@@ -1,11 +1,14 @@
 import {
     getAddress,
-    getCategory
+    getCategory,
+    getShopList
 } from '../api'
 
 
 import {
-    SAVE_ADDRESS, SAVE_CATEGORY
+    SAVE_ADDRESS, 
+    SAVE_CATEGORY,
+    SAVE_SHOPLIST
 } from './mutations-type'
 
 
@@ -19,8 +22,15 @@ export default{
         } */
         result.code === 0 && commit(SAVE_ADDRESS,result.data)
     },
-    async getCategoryAction({commit}){
+    async getCategoryAction({commit},fn){
         let result = await getCategory()
-        result.code === 0 && commit(SAVE_CATEGORY,result.data)
+        if(result.code === 0){
+            commit(SAVE_CATEGORY,result.data)
+            typeof fn === 'function' && fn()
+        }
+    },
+    async getShopListAction({commit}){
+        let result = await getShopList(40.10038,116.36867)
+        result.code === 0 && commit(SAVE_SHOPLIST,result.data)
     }
 }
