@@ -8,7 +8,4 @@
 ```
 使用vue全家桶+Webpack+axios完成
 ```
-## 启动
-``` 
-先在serve文件夹下开启服务器（搭配node+Mongodb）
-```
+需先在serve文件夹下开启服务器（搭配node+Mongodb）
