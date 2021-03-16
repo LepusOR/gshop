@@ -50,7 +50,7 @@ import ShopList from '../../components/ShopList/ShopList'
                 pagination: {
                   el: '.swiper-pagination', 
                 },
-                loop:true
+                // loop:true
                 // autoplay: true,//可选选项，自动滑动
                 })
             })
