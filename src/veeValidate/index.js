@@ -26,5 +26,5 @@ VeeValidate.Validator.extend('code', {
     validate: value => {
       return /^\d{4,6}$/.test(value)
     },
-    getMessage: field => field + '必须是11位手机号码'
+    getMessage: field => field + '必须是6位数字'
 })

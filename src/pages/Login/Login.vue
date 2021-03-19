@@ -14,10 +14,10 @@
               <section class="login_message">
                 <input v-model="phone" name="phone" v-validate="'required|phone'" type="tel" maxlength="11" placeholder="手机号">
                 <span style="color: red;" v-show="errors.has('phone')">{{ errors.first('phone') }}</span>
-                <button @click.prevent="sendCode" :disabled="!rightPhoneNumber || countDownTime > 0" class="get_verification" :class="{rightPhone:rightPhoneNumber}">{{countDownTime?`${countDownTime}s以后可以重新获取`:'获取验证码'}}</button>
+                <button @click.prevent="getCode" :disabled="!rightPhoneNumber || countDownTime > 0" class="get_verification" :class="{rightPhone:rightPhoneNumber}">{{countDownTime?`${countDownTime}s以后可以重新获取`:'获取验证码'}}</button>
               </section>
               <section class="login_verification">
-                <input type="tel" maxlength="8" placeholder="验证码" name="code" v-validate="'required|code'">
+                <input v-model="code" type="tel" maxlength="8" placeholder="验证码" name="code" v-validate="'required|code'">
                 <span style="color: red;" v-show="errors.has('code')">{{ errors.first('code') }}</span>
               </section>
               <section class="login_hint">
@@ -28,11 +28,11 @@
             <div :class="{on:isUsernameLogin}">
               <section>
                 <section class="login_message">
-                  <input type="tel" name="username" v-validate="'required'" maxlength="11" placeholder="手机/邮箱/用户名">
+                  <input v-model="username" type="tel" name="username" v-validate="'required'" maxlength="11" placeholder="手机/邮箱/用户名">
                   <span style="color: red;" v-show="errors.has('username')">{{ errors.first('username') }}</span>
                 </section>
                 <section class="login_verification">
-                  <input :type="isShowPwd?'tel':'password'" maxlength="8" placeholder="密码" name="pwd" v-validate="'required'">
+                  <input v-model="pwd" :type="isShowPwd?'tel':'password'" maxlength="8" placeholder="密码" name="pwd" v-validate="'required'">
                   <span style="color: red;" v-show="errors.has('pwd')">{{ errors.first('pwd') }}</span>
                   <div class="switch_button" :class="isShowPwd?'on':'off'" @click="isShowPwd=!isShowPwd">
                     <div class="switch_circle" :class="{right : isShowPwd}"></div>
@@ -40,7 +40,7 @@
                   </div>
                 </section>
                 <section class="login_message">
-                  <input type="text" maxlength="11" placeholder="验证码" name="captcha" v-validate="'required'">
+                  <input v-model="captcha" type="text" maxlength="11" placeholder="验证码" name="captcha" v-validate="'required'">
                   <span style="color: red;" v-show="errors.has('captcha')">{{ errors.first('captcha') }}</span>
                   <img  ref="captcha" @click="toggleCaptcha" class="get_verification" src="http://localhost:4000/captcha" alt="captcha">
                 </section>
@@ -58,13 +58,18 @@
 </template>
 
 <script>
+  import {sendCode} from '../../api'
   export default {
     data(){
       return{
         isUsernameLogin : false,
         isShowPwd: false,
         phone:'',
-        countDownTime:0
+        countDownTime:0,
+        code:'',
+        username:'',
+        pwd:'',
+        captcha:''
       }
     },
     computed:{
@@ -73,19 +78,50 @@
       }
     },
     methods:{
-      sendCode(){
+      async getCode(){
         this.countDownTime = 5
         let interval =  setInterval(()=>{
           this.countDownTime--
           this.countDownTime === 0 && clearInterval(interval)
         },1000)
+
+        let result = await this.$API.sendCode({phone:this.phone})
+        console.log(result)
+        if(result.code === 0){
+          alert('短信已发送')
+        }else{
+          alert(result.msg)
+        }
       },
       async login(){
-        let {isUsernameLogin} = this
+        let {isUsernameLogin,phone,code,username,pwd,captcha} = this
         let names = isUsernameLogin?['username','pwd','captcha']:['phone','code']
         const success = await this.$validator.validateAll(names) // 对所有表单项进行验证
         if(success){
+          // 后端验证
+          let result
+          if(isUsernameLogin){
+            result = await this.$API.loginWithUsername({username,pwd,captcha})
+            if(result.code === 1){
+              alert('请输入正确的用户名/密码/验证码')
+              console.log(result)
+              this.toggleCaptcha()
+              this.captcha = ''
+            }
+          }else{
+            result = await this.$API.loginWithPhone({phone,code})
+            if(result.code === 1){
+              alert('请输入正确的验证码')
+              this.code = ''
+            }
+          }
 
+          if(result.code === 0){
+            alert('登录成功')
+            console.log(result)
+            this.$router.replace('/profile')
+            this.$store.dispatch('getUserInfoAction',result.data)
+          }
         }else{
           alert('前端验证失败')
         }

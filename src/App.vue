@@ -7,9 +7,15 @@
 
 <script>
   import FooterGuide from './components/FooterGuide/FooterGuide'
+  import {SAVE_USER} from './store/mutations-type'
   export default{
     name:'app',
-    components:{FooterGuide}
+    components:{FooterGuide},
+    async mounted(){
+      let result = await this.$API.autoLogin()
+      this.$store.commit(SAVE_USER,result.data)
+      console.log(result)
+    }
   }
 </script>
 

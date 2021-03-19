@@ -1,7 +1,9 @@
 import {
     SAVE_ADDRESS,
     SAVE_CATEGORY,
-    SAVE_SHOPLIST
+    SAVE_SHOPLIST,
+    SAVE_USER,
+    SAVE_TOKEN
 } from './mutations-type'
 
 
@@ -14,6 +16,12 @@ export default{
     },
     [SAVE_SHOPLIST](state,shopList){
         state.shopList = shopList
+    },
+    [SAVE_USER](state,user){
+        state.user = user
+    },
+    [SAVE_TOKEN](state,token){
+        state.token = token
     }
 }
 
