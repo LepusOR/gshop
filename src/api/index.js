@@ -17,7 +17,7 @@ export const getCategory = () => ajax({
 
 
 export const getShopList = (latitude,longitude) => ajax({
-    url:'/shops/',
+    url:'/shops',
     params:{
         latitude,
         longitude

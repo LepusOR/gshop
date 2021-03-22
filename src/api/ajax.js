@@ -3,7 +3,7 @@ import qs from 'qs'
 import router from '../router'
 
 const instance = axios.create({
-    baseURL:'api'
+    baseURL:'/api'
 })
 
 instance.interceptors.request.use(config => {
@@ -25,7 +25,7 @@ instance.interceptors.response.use(
     error => {
         console.log(error.message);
         if(!error.response){
-            alert('请先登录')
+            alert(error.message)
             if(router.currentRoute.path !== '/login'){
                 router.replace('/login')
             }
