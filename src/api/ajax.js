@@ -8,8 +8,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(config => {
     config.data = qs.stringify(config.data)
-    let token = localStorage.getItem('token_key')
+    
     if(config.headers.needToken){
+        let token = localStorage.getItem('token_key')
         if(token){
             config.headers.authorization = token
         }else{
@@ -22,8 +23,8 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(
     response => response.data,
     error => {
-        console.log(error.response);
-        if(!error.message){
+        console.log(error.message);
+        if(!error.response){
             alert('请先登录')
             if(router.currentRoute.path !== '/login'){
                 router.replace('/login')
