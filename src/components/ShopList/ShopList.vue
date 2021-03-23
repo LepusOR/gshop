@@ -1,7 +1,7 @@
 <template>
     <div class="msite_shop_list">
         <div class="shop_header">
-            <i class="iconfont icon-xuanxiang"></i>
+            <i class="iconfont icon-shangjia"></i>
             <span class="shop_header_title">附近商家</span>
         </div>
         <div class="shop_container">

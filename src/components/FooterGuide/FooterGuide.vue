@@ -1,16 +1,16 @@
 <template>
    <div id="footerContainer">
        <div :class="{active:$route.path==='/msite'}" @click="goPath('./msite')" class="guideItem">
-           <i class="iconfont icon-waimai"></i><span>首页</span>
+           <i class="iconfont icon-shouye2"></i><span>首页</span>
        </div>
        <div :class="{active:$route.path==='/search'}" @click="goPath('./search')" class="guideItem">
-           <i class="iconfont icon-search"></i><span>搜索</span>
+           <i class="iconfont icon-sousuo1"></i><span>搜索</span>
        </div>
        <div :class="{active:$route.path==='/order'}" @click="goPath('./order')" class="guideItem">
            <i class="iconfont icon-dingdan"></i><span>订单</span>
        </div>
        <div :class="{active:$route.path==='/profile'}" @click="goPath('./profile')" class="guideItem">
-           <i class="iconfont icon-geren"></i><span>我的</span>
+           <i class="iconfont icon-wode"></i><span>我的</span>
        </div>
    </div>
 </template>

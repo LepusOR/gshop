@@ -1,40 +1,40 @@
 <template>
    <div id="goodContainer">
        <div class="leftContainer">
-          <ul class="navList">
-             <li v-for="(good,index) in goods" :key="index">
+          <ul class="navList" ref="leftUl">
+             <li @click="changeNavIndex(index)" :class="{active:navIndex===index}" v-for="(good,index) in goods" :key="index">
                 {{good.name}}
              </li>
           </ul>
        </div>
        <div class="rightContainer">
           <div class="foods-wrapper">
-      <ul>
-        <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
-          <h1 class="title">{{good.name}}</h1>
-          <ul>
-            <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index">
-              <div class="icon">
-                <img width="57" height="57"
-                     :src="food.image">
-              </div>
-              <div class="content">
-                <h2 class="name">{{food.name}}</h2>
-                <p class="desc">{{food.description}}</p>
-                <div class="extra">
-                  <span class="count">月售{{food.sellCount}}份</span>
-                  <span>好评率{{food.rating}}%</span></div>
-                <div class="price">
-                  <span class="now">￥{{food.price}}</span>
-                </div>
-                <div class="cartcontrol-wrapper">
-                  CartControl组件
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
+            <ul ref="rightUl">
+               <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
+                  <h1 class="title">{{good.name}}</h1>
+                  <ul>
+                     <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index">
+                     <div class="icon">
+                        <img width="57" height="57"
+                              :src="food.image">
+                     </div>
+                     <div class="content">
+                        <h2 class="name">{{food.name}}</h2>
+                        <p class="desc">{{food.description}}</p>
+                        <div class="extra">
+                           <span class="count">月售{{food.sellCount}}份</span>
+                           <span>好评率{{food.rating}}%</span></div>
+                        <div class="price">
+                           <span class="now">￥{{food.price}}</span>
+                        </div>
+                        <div class="cartcontrol-wrapper">
+                           <CartControl :food="food"/>
+                        </div>
+                     </div>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
     </div>
        </div>
    </div>
@@ -43,7 +43,17 @@
 <script>
    import {mapState} from 'vuex'
    import Bscroll from 'better-scroll'
+   import CartControl from '../../../components/CartControl/CartControl'
    export default {
+      components:{
+         CartControl
+      },
+      data(){
+         return{
+            tops:[],
+            scrollY:0
+         }
+      },
       async mounted(){
          // new Bscroll('.leftContainer',{
          //    scrollY:true
@@ -53,6 +63,7 @@
          // })
          if(this.goods){
             this._initScroll()
+            this._initTops()
          }
 
          // let result = await this.$API.getShopDatas()
@@ -61,22 +72,63 @@
       computed:{
          ...mapState({
             goods:state => state.shop.shopDatas.goods
-         })
+         }),
+         navIndex(){
+            let {tops,scrollY} = this
+            let index = tops.findIndex((top,index)=>scrollY >= tops[index] && scrollY < tops[index+1])
+            if(this.leftScroll && index !== this.index){
+               this.index = index
+               this.leftScroll.scrollToElement(this.$refs.leftUl.children[index],1000)
+            }
+            return index
+         }
       },
       methods:{
          _initScroll(){
-            new Bscroll('.leftContainer',{
-                  scrollY:true
+            this.leftScroll =  new Bscroll('.leftContainer',{
+                  scrollY:true,
+                  click:true
             })
-            new Bscroll('.rightContainer',{
-                  scrollY:true
+            this.rightScroll = new Bscroll('.rightContainer',{
+                  scrollY:true,
+                  probeType:2,
+                  click:true
             })
+            this.rightScroll.on('scroll',({x,y})=>{
+               this.scrollY = Math.abs(y)
+            })
+            this.rightScroll.on('scrollEnd',({x,y})=>{
+               this.scrollY = Math.abs(y)
+            })
+         },
+         _initTops(){
+            let lis = Array.from(this.$refs.rightUl.children) 
+            let tops = []
+            let top = 0
+            tops.push(top)
+            // for(var i = 0;i < lis.length;i++){
+            //    top += lis[i].clientHeight;
+            //    tops.push(top)
+            // }
+            // this.tops = tops
+            lis.reduce((pre,liItem)=>{
+               pre += liItem.clientHeight
+               tops.push(pre)
+               return pre
+            },top)
+            
+            this.tops = tops
+         },
+         changeNavIndex(index){
+            this.scrollY = this.tops[index]
+            this.rightScroll.scrollTo(0,-this.scrollY,1000)
          }
       },
       watch:{
          goods(){
             this.$nextTick(()=>{
                this._initScroll()
+               this._initTops()
             })
          }
       }
@@ -103,6 +155,9 @@
                text-align center
                line-height 50px
                position relative
+               &.active
+                  background #ffffff
+                  color $green
                &:after
                   content ''
                   width 80%
