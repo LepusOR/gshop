@@ -66,3 +66,12 @@ export const autoLogin = () => ajax({
         needToken:true
     }
 })
+
+
+export const test = () => ajax('/test')
+
+
+
+export const getShopDatas = () => ajax({
+    url:'/getShopDatas'
+})

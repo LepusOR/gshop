@@ -2,8 +2,8 @@
   <div class="shop-header">
     <nav class="shop-nav"
          style="background-image: url('https://fuss10.elemecdn.com/f/5c/ead54394c3de198d3e6d3e9111bbfpng.png');">
-      <a class="back">
-        <i class="iconfont icon-arrow_left"/>
+      <a class="back" @click="$router.back()">
+        <i class="iconfont icon-jiantou2"/>
       </a>
     </nav>
     <div class="shop-content">
@@ -154,7 +154,7 @@
         position: absolute
         top: 10px
         left: 0
-        .icon-jiantouzuo
+        .icon-jiantou2
           display: block
           padding: 5px
           font-size: 20px
