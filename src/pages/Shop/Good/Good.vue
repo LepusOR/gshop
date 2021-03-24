@@ -62,9 +62,15 @@
          //    scrollY:true
          // })
          if(this.goods){
-            this._initScroll()
-            this._initTops()
+            this.$nextTick(()=>{
+               this._initScroll()
+               this._initTops()
+            })
          }
+         // this.$nextTick(()=>{
+         //       this._initScroll()
+         //       this._initTops()
+         //    })
 
          // let result = await this.$API.getShopDatas()
          // console.log(result)
