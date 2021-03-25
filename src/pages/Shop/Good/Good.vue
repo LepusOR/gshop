@@ -91,15 +91,20 @@
       },
       methods:{
          _initScroll(){
-            this.leftScroll =  new Bscroll('.leftContainer',{
+            if(this.leftScroll || this.rightScroll){
+               this.leftScroll.refresh()
+               this.rightScroll.refresh()
+            }else{
+               this.leftScroll =  new Bscroll('.leftContainer',{
                   scrollY:true,
                   click:true
-            })
-            this.rightScroll = new Bscroll('.rightContainer',{
+               })
+               this.rightScroll = new Bscroll('.rightContainer',{
                   scrollY:true,
                   probeType:2,
                   click:true
-            })
+               })
+            }
             this.rightScroll.on('scroll',({x,y})=>{
                this.scrollY = Math.abs(y)
             })
