@@ -37,6 +37,7 @@
             </ul>
     </div>
        </div>
+       <ShopCart/>
    </div>
 </template>
 
@@ -44,9 +45,12 @@
    import {mapState} from 'vuex'
    import Bscroll from 'better-scroll'
    import CartControl from '../../../components/CartControl/CartControl'
+   import ShopCart from '../../../components/ShopCart/ShopCart'
+
    export default {
       components:{
-         CartControl
+         CartControl,
+         ShopCart
       },
       data(){
          return{
@@ -151,7 +155,7 @@
    #goodContainer
       display flex
       overflow hidden
-      height calc(100vh - 224px)
+      height calc(100vh - 272px)
       .leftContainer
          width 80px
          background-color #f3f5f7
